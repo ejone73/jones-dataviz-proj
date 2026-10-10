@@ -18,8 +18,8 @@ library(readxl)
 library(gt)
 library(janitor)
 library(ggthemes)
-library(ggpattern)
 library(patchwork)
+library(ggpattern)
 ```
 
 ```{r, load data}
