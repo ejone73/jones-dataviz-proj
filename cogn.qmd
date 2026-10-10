@@ -1,0 +1,784 @@
+---
+title: "cogn"
+author: "Ember Jones"
+format: html
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r, load libraries}
+#| output: FALSE
+#| warning: FALSE
+#| message: FALSE
+
+library(tidyverse)
+library(readxl)
+library(gt)
+library(janitor)
+library(ggthemes)
+library(ggpattern)
+library(patchwork)
+```
+
+```{r, load data}
+#| output: FALSE
+#| include: FALSE 
+
+data.clean <- read_csv("./Cognitive_Performance_Comprehensive.csv")
+```
+
+```{r, clean data}
+#| output: FALSE
+
+data <- data.clean |>
+  mutate(ID = case_when(BirdID == "BlueBlack" ~ 1,
+                   BirdID == "BlueBrown" ~ 2,
+                   BirdID == "BlueGreen" ~ 3,
+                   BirdID == "BlueGrey" ~ 4,
+                   BirdID == "BlueLightBlue" ~ 5,
+                   BirdID == "BlueOrange" ~ 6,
+                   BirdID == "BlueRed" ~ 7,
+                   BirdID == "BlueWhite" ~ 8,
+                   BirdID == "BlueYellow" ~ 9,
+                   BirdID == "GreenBlue" ~ 10,
+                   BirdID == "GreenGrey" ~ 11,
+                   BirdID == "GreenOrange" ~ 12,
+                   BirdID == "GreenRed" ~ 13,
+                   BirdID == "GreenWhite" ~ 14,
+                   BirdID == "GreenYellow" ~ 15,
+                   BirdID == "LightBlueBlue" ~ 16,
+                   BirdID == "LightBlueBrown" ~ 17,
+                   BirdID == "LightBlueGreen" ~ 18,
+                   BirdID == "LightBlueRed" ~ 19,
+                   BirdID == "LightBlueWhite" ~ 20,
+                   BirdID == "LightBlueYellow" ~ 21,
+                   BirdID == "YellowGrey" ~ 22)) |>
+  relocate(ID, .before = BirdID) |>
+  select(-BirdID) |>
+  relocate(TrialType, .after = TrialDay) |>
+  relocate(TrialDay, .after = ID)
+```
+
+```{r, separate data}
+#| output: FALSE
+
+# SPL&M data
+splm.df <- data |>
+  filter(TrialType == "SPL&M") 
+splm.1.df <- splm.df |> 
+  filter(TrialDay == 1)
+splm.2.df <- splm.df |>
+  filter(TrialDay == 2)
+splm.3.df <- splm.df |>
+  filter(TrialDay == 3)
+
+# RL data
+rl.df <- data |>
+  filter(TrialType == "RL")
+rl.1.df <- rl.df |>
+  filter(TrialDay == 1)
+rl.2.df <- rl.df |>
+  filter(TrialDay == 2)
+rl.3.df <- rl.df |>
+  filter(TrialDay == 3)
+```
+
+```{r, splm avg/day}
+#| output: FALSE
+
+## D1
+### T1
+splm.avg <- splm.1.df |>
+  filter(TrialNum == 1) 
+splm.err.d1t1 <- mean(splm.avg$NumError)
+splm.sec.d1t1 <- mean(splm.avg$NumSec)
+### T2
+splm.avg <- splm.1.df |>
+  filter(TrialNum == 2)
+splm.err.d1t2 <- mean(splm.avg$NumError)
+splm.sec.d1t2 <- mean(splm.avg$NumSec)
+### T3
+splm.avg <- splm.1.df |>
+  filter(TrialNum == 3)
+splm.err.d1t3 <- mean(splm.avg$NumError)
+splm.sec.d1t3 <- mean(splm.avg$NumSec)
+remove(splm.1.df)
+
+## D2
+### T1
+splm.avg <- splm.2.df |>
+  filter(TrialNum == 1) 
+splm.err.d2t1 <- mean(splm.avg$NumError)
+splm.sec.d2t1 <- mean(splm.avg$NumSec)
+### T2
+splm.avg <- splm.2.df |>
+  filter(TrialNum == 2)
+splm.err.d2t2 <- mean(splm.avg$NumError)
+splm.sec.d2t2 <- mean(splm.avg$NumSec)
+### T3
+splm.avg <- splm.2.df |>
+  filter(TrialNum == 3)
+splm.err.d2t3 <- mean(splm.avg$NumError)
+splm.sec.d2t3 <- mean(splm.avg$NumSec)
+remove(splm.2.df)
+
+## D3
+### T1
+splm.avg <- splm.3.df |>
+  filter(TrialNum == 1) 
+splm.err.d3t1 <- mean(splm.avg$NumError)
+splm.sec.d3t1 <- mean(splm.avg$NumSec)
+### T2
+splm.avg <- splm.3.df |>
+  filter(TrialNum == 2)
+splm.err.d3t2 <- mean(splm.avg$NumError)
+splm.sec.d3t2 <- mean(splm.avg$NumSec)
+### T3
+splm.avg <- splm.3.df |>
+  filter(TrialNum == 3)
+splm.err.d3t3 <- mean(splm.avg$NumError)
+splm.sec.d3t3 <- mean(splm.avg$NumSec)
+remove(splm.3.df)
+```
+
+```{r, rl avg/day}
+#| output: FALSE
+
+## D1
+### T1
+rl.avg <- rl.1.df |>
+  filter(TrialNum == 1) 
+rl.err.d1t1 <- mean(rl.avg$NumError)
+rl.sec.d1t1 <- mean(rl.avg$NumSec)
+### T2
+rl.avg <- rl.1.df |>
+  filter(TrialNum == 2) 
+rl.err.d1t2 <- mean(rl.avg$NumError)
+rl.sec.d1t2 <- mean(rl.avg$NumSec)
+### T3
+rl.avg <- rl.1.df |>
+  filter(TrialNum == 3) 
+rl.err.d1t3 <- mean(rl.avg$NumError)
+rl.sec.d1t3 <- mean(rl.avg$NumSec)
+remove(rl.1.df)
+
+## D2
+### T1
+rl.avg <- rl.2.df |>
+  filter(TrialNum == 1) 
+rl.err.d2t1 <- mean(rl.avg$NumError)
+rl.sec.d2t1 <- mean(rl.avg$NumSec)
+### T2
+rl.avg <- rl.2.df |>
+  filter(TrialNum == 2) 
+rl.err.d2t2 <- mean(rl.avg$NumError)
+rl.sec.d2t2 <- mean(rl.avg$NumSec)
+### T3
+rl.avg <- rl.2.df |>
+  filter(TrialNum == 3) 
+rl.err.d2t3 <- mean(rl.avg$NumError)
+rl.sec.d2t3 <- mean(rl.avg$NumSec)
+remove(rl.2.df)
+
+## D3
+### T1
+rl.avg <- rl.3.df |>
+  filter(TrialNum == 1) 
+rl.err.d3t1 <- mean(rl.avg$NumError)
+rl.sec.d3t1 <- mean(rl.avg$NumSec)
+### T2
+rl.avg <- rl.3.df |>
+  filter(TrialNum == 2) 
+rl.err.d3t2 <- mean(rl.avg$NumError)
+rl.sec.d3t2 <- mean(rl.avg$NumSec)
+### T3
+rl.avg <- rl.3.df |>
+  filter(TrialNum == 3) 
+rl.err.d3t3 <- mean(rl.avg$NumError)
+rl.sec.d3t3 <- mean(rl.avg$NumSec)
+remove(rl.3.df)
+```
+
+```{r, combine avg}
+#| output: FALSE
+#| warning: FALSE
+
+## Combine 
+avg <- tibble(
+              splm.avg.err = c(splm.err.d1t1, splm.err.d1t2, 
+                               splm.err.d1t3, splm.err.d2t1, 
+                               splm.err.d2t2, splm.err.d2t3, 
+                               splm.err.d3t1, splm.err.d3t2, 
+                               splm.err.d3t3),
+              splm.avg.sec = c(splm.sec.d1t1, splm.sec.d1t2, 
+                               splm.sec.d1t3, splm.sec.d2t1, 
+                               splm.sec.d2t2, splm.sec.d2t3, 
+                               splm.sec.d3t1, splm.sec.d3t2, 
+                               splm.sec.d3t3),
+              rl.avg.err = c(rl.err.d1t1, rl.err.d1t2, rl.err.d1t3, 
+                             rl.err.d2t1, rl.err.d2t2, rl.err.d2t3, 
+                             rl.err.d3t1, rl.err.d3t2, rl.err.d3t3), 
+              rl.avg.sec = c(rl.sec.d1t1, rl.sec.d1t2, rl.sec.d1t3, 
+                             rl.sec.d2t1, rl.sec.d2t2, rl.sec.d2t3, 
+                             rl.sec.d3t1, rl.sec.d3t2, rl.sec.d3t3),
+              trialday = c("D1 T1", "D1 T2", "D1 T3", "D2 T1", "D2 T2", 
+                           "D2 T3", "D3 T1", "D3 T2", "D3 T3"),
+              daynum = c(1, 1, 1, 2, 2, 2, 3, 3, 3))
+avg <- avg |>
+  mutate(across(c(splm.avg.err:rl.avg.sec), round, 2))
+```
+
+```{r, pivot avg - NO LONGER NEEDED? DELETE?}
+#| output: FALSE
+
+## error
+avg.err.long <- avg |>
+  pivot_longer(
+    cols = c(splm.avg.err, rl.avg.err),
+    names_to = "type",
+    values_to = "err"
+  ) |>
+  relocate(trialday, .before = type) |>
+  select(trialday:err)
+
+## seconds
+avg.sec.long <- avg |>
+  pivot_longer(
+    cols = c(splm.avg.sec, rl.avg.sec),
+    names_to = "type",
+    values_to = "sec"
+  ) |>
+  relocate(trialday, .before = type) |>
+  select(trialday:sec)
+```
+
+```{r, plot: splm errors - POP}
+#| output: FALSE
+
+splm.err.barP <- ggplot(avg, aes(
+                                 x = trialday, 
+                                 y = splm.avg.err, 
+                                 fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Average number of errors", 
+                         subtitle = "Spatial learning & memory task") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(
+                                               2, 4, 6, 8, 10)) +
+                 theme_clean() +
+                 labs(
+                      fill = "Day",
+                      y = "Average number of errors",
+                      x = "Trial number") +
+                 scale_fill_hc(
+                               "sunset")
+```
+
+```{r, ^ SCI1}
+#| output: FALSE
+
+splm.err.barS <- ggplot(avg, aes(
+                                 x = trialday, 
+                                 y = splm.avg.err, 
+                                 fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Mean error frequency per trial", 
+                         subtitle = "Spatial learning & memory task") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(
+                                               2, 4, 6, 8, 10)) +
+                 theme_calc() +
+                 labs(
+                      fill = "Day",
+                      y = "Mean error frequency",
+                      x = "Trial number") +
+                 scale_fill_tableau(
+                               "Classic Gray 5")
+```
+
+```{r, plot: splm secs - POP}
+#| output: FALSE
+
+splm.sec.barP <- ggplot(avg, aes(
+                                 x = trialday, 
+                                 y = splm.avg.sec, 
+                                 fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Average completion time",
+                         subtitle = "Spatial learning & memory task") +
+                 theme(
+                       plot.title = element_text(
+                                                hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 ylab(
+                      "Average completion time (minutes)") +
+                 scale_y_continuous(
+                                    breaks = c(0, 30, 60, 90, 120, 150, 
+                                               180, 210, 240),
+                                    labels = c("0:00", "0:30", "1:00", 
+                                               "1:30", "2:00", "2:30", 
+                                               "3:00", "3:30", "4:00")) +
+                 theme_clean() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_hc(
+                               "sunset")
+```
+
+```{r, ^ SCI2}
+#| output: FALSE
+
+splm.sec.barS <- ggplot(avg, aes(
+                                 x = trialday, 
+                                 y = splm.avg.sec, 
+                                 fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Mean time per trial",
+                         subtitle = "Spatial learning & memory task") +
+                 theme(
+                       plot.title = element_text(
+                                                hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 ylab(
+                      "Mean time (min)") +
+                 scale_y_continuous(
+                                    breaks = c(0, 30, 60, 90, 120, 150, 
+                                               180, 210, 240),
+                                    labels = c("0:00", "0:30", "1:00", 
+                                               "1:30", "2:00", "2:30", 
+                                               "3:00", "3:30", "4:00")) +
+                 theme_calc() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_tableau(
+                               "Classic Gray 5")
+```
+
+```{r, plot: rl errors - POP}
+#| output: FALSE
+
+rl.err.barP <- ggplot(avg, aes(
+                                x = trialday, 
+                                y = rl.avg.err, 
+                                fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Average number of errors",
+                         subtitle = "Reversal learning task") +
+                 theme(
+                       plot.title = element_text(
+                                                 hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(
+                                              0, 2, 4, 6, 8, 10, 12)) +
+                 ylab(
+                      "Average number of errors") +
+                 theme_clean() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_hc(
+                               "avocado")
+```
+
+```{r, ^ SCI3}
+#| output: FALSE
+
+rl.err.barS <- ggplot(avg, aes(
+                                x = trialday, 
+                                y = rl.avg.err, 
+                                fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Mean error frequency per trial",
+                         subtitle = "Reversal learning task") +
+                 theme(
+                       plot.title = element_text(
+                                                 hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(
+                                              0, 2, 4, 6, 8, 10, 12)) +
+                 ylab(
+                      "Mean error frequency") +
+                 theme_calc() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_tableau(
+                               "Classic Gray 5")
+```
+
+```{r, plot: rl secs - POP}
+#| output: FALSE
+
+rl.sec.barP <- ggplot(avg, aes(
+                               x = trialday, 
+                               y = rl.avg.sec, 
+                               fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Average completion time",
+                         subtitle = "Reversal learning task") +
+                 theme(
+                       plot.title = element_text(
+                                                hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(0, 60, 120, 180, 240,
+                                               300),
+                                    labels = c("0:00", "1:00", "2:00", 
+                                               "3:00", "4:00", "5:00")) +
+                 ylab(
+                      "Average completion time (minutes)") +
+                 theme_clean() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_hc(
+                               "avocado")
+```
+
+```{r, ^ SCI4}
+#| output: FALSE
+
+rl.sec.barS <- ggplot(avg, aes(
+                               x = trialday, 
+                               y = rl.avg.sec, 
+                               fill = factor(daynum))) +
+                 geom_col() +
+                 ggtitle(
+                         "Mean time per trial",
+                         subtitle = "Reversal learning task") +
+                 theme(
+                       plot.title = element_text(
+                                                hjust = 0.5)) +
+                 xlab(
+                      "Trial number") +
+                 scale_x_discrete(
+                                  labels = c(
+                                             "1", "2", "3", "4", "5",
+                                             "6", "7", "8", "9")) +
+                 scale_y_continuous(
+                                    breaks = c(0, 60, 120, 180, 240,
+                                               300),
+                                    labels = c("0:00", "1:00", "2:00", 
+                                               "3:00", "4:00", "5:00")) +
+                 ylab(
+                      "Mean time (min)") +
+                 theme_calc() +
+                 labs(
+                      fill = "Day") +
+                 scale_fill_tableau(
+                               "Classic Gray 5")
+```
+
+```{r, plot: errors stacked - POP}
+#| output: FALSE
+
+STK.err.barP <- ggplot(avg, aes(x = trialday)) +
+  geom_col(
+    aes(y = splm.avg.err, fill = "SPLM"), 
+           position = "identity", 
+    alpha = 0.6) +
+  geom_col_pattern(
+    aes(y = rl.avg.err, fill = "RL"),
+    pattern = "stripe", 
+    pattern_fill = "#67a956", 
+    pattern_colour = "#67a956", 
+    pattern_density = 0.2, 
+    pattern_spacing = 0.02, 
+    position = "identity",  
+    alpha = 0.6) +
+  scale_fill_manual(
+    values = c(
+      "RL" = "NA",
+      "SPLM" = "#aa759d"),
+    labels = c(
+      "RL",
+      "SpL&M")) +
+  labs(
+    x = "Trial number",
+    y = "Average number of errors per trial)",
+    fill = "Trial type") +
+  scale_x_discrete(
+                   labels = c(
+                              "1", "2", "3", "4", "5", "6", "7", "8",
+                              "9")) +
+  scale_y_continuous(
+                     breaks = c(2, 4, 6, 8, 10, 12)) +
+  ggtitle("Average number of errors per trial and type") +
+  geom_vline(
+             xintercept = c(3.5, 6.5),
+             linetype = "dashed",
+             color = "gray") +
+  annotate("text", x = 2, y = 13.2, label = "Day 1") +
+  annotate("text", x = 5, y = 13.2, label = "Day 2") +
+  annotate("text", x = 8, y = 13.2, label = "Day 3") +
+  coord_cartesian(ylim = c(0, 13), clip = "off") +
+  theme(
+    plot.margin = margin(b = 35)) +
+  theme_clean()
+```
+
+```{r, errors stacked - SCI}
+STK.err.barS <- ggplot(avg, aes(x = trialday)) +
+  geom_col(
+    aes(y = splm.avg.err, fill = "SPLM"), 
+           position = "identity", 
+    alpha = 0.6) +
+  geom_col_pattern(
+    aes(y = rl.avg.err, fill = "RL"),
+    pattern = "stripe", 
+    pattern_fill = "black", 
+    pattern_colour = "black", 
+    pattern_density = 0.2, 
+    pattern_spacing = 0.04, 
+    position = "identity",  
+    alpha = 0.6) +
+  scale_fill_manual(
+    values = c(
+      "RL" = "NA",
+      "SPLM" = "darkgray"),
+    labels = c(
+      "RL",
+      "SpL&M")) +
+  labs(
+    x = "Trial number",
+    y = "Mean error frequency per trial",
+    fill = "Trial type") +
+  scale_x_discrete(
+                   labels = c(
+                              "1", "2", "3", "4", "5", "6", "7", "8",
+                              "9")) +
+  scale_y_continuous(
+                     breaks = c(2, 4, 6, 8, 10, 12)) +
+  ggtitle("Mean error frequency per trial") +
+  geom_vline(
+             xintercept = c(3.5, 6.5),
+             linetype = "dashed",
+             color = "gray") +
+  annotate("text", x = 2, y = 13.2, label = "Day 1") +
+  annotate("text", x = 5, y = 13.2, label = "Day 2") +
+  annotate("text", x = 8, y = 13.2, label = "Day 3") +
+  coord_cartesian(ylim = c(0, 13), clip = "off") +
+  theme(
+    plot.margin = margin(b = 35)) +
+  theme_calc()
+```
+
+```{r, plot: sec stacked - POP}
+#| output: FALSE
+
+STK.sec.barP <- ggplot(avg, aes(x = trialday)) +
+  geom_col(
+    aes(y = splm.avg.sec, fill = "SPLM"), 
+           position = "identity", 
+    alpha = 0.6) +
+  geom_col_pattern(
+    aes(y = rl.avg.sec, fill = "RL"),
+    pattern = "stripe", 
+    pattern_fill = "#ae123a", 
+    pattern_colour = "#ae123a", 
+    pattern_density = 0.2, 
+    pattern_spacing = 0.02, 
+    position = "identity",  
+    alpha = 0.6) +
+  scale_fill_manual(
+    values = c(
+      "RL" = "NA",
+      "SPLM" = "#41b7c4"),
+    labels = c(
+      "RL",
+      "SpL&M")) +
+  labs(
+    x = "Trial number",
+    y = "Average completion time (minutes)",
+    fill = "Trial type") +
+  scale_x_discrete(
+                   labels = c(
+                              "1", "2", "3", "4", "5", "6", "7", "8",
+                              "9")) +
+  scale_y_continuous(
+                     breaks = c(0, 60, 120, 180, 240, 300),
+                     labels = c("0:00", "1:00", "2:00", "3:00", "4:00", 
+                                "5:00")) +
+  ggtitle("Average completion time per trial and type") +
+  geom_vline(
+             xintercept = c(3.5, 6.5),
+             linetype = "dashed",
+             color = "gray") +
+  annotate("text", x = 2, y = 312, label = "Day 1") +
+  annotate("text", x = 5, y = 312, label = "Day 2") +
+  annotate("text", x = 8, y = 312, label = "Day 3") +
+  coord_cartesian(ylim = c(0, 300), clip = "off") +
+  theme(
+    plot.margin = margin(b = 35)) +
+  theme_clean()
+```
+
+```{r, plot: sec stacked - SCI}
+STK.sec.barS <- ggplot(avg, aes(x = trialday)) +
+  geom_col(
+    aes(y = splm.avg.sec, fill = "SPLM"), 
+           position = "identity", 
+    alpha = 0.6) +
+  geom_col_pattern(
+    aes(y = rl.avg.sec, fill = "RL"),
+    pattern = "stripe", 
+    pattern_fill = "black", 
+    pattern_colour = "black", 
+    pattern_density = 0.2, 
+    pattern_spacing = 0.04, 
+    position = "identity",  
+    alpha = 0.6) +
+  scale_fill_manual(
+    values = c(
+      "RL" = "NA",
+      "SPLM" = "darkgray"),
+    labels = c(
+      "RL",
+      "SpL&M")) +
+  labs(
+    x = "Trial number",
+    y = "Mean time (min)",
+    fill = "Trial type") +
+  scale_x_discrete(
+                   labels = c(
+                              "1", "2", "3", "4", "5", "6", "7", "8",
+                              "9")) +
+  scale_y_continuous(
+                     breaks = c(0, 60, 120, 180, 240, 300),
+                     labels = c("0:00", "1:00", "2:00", "3:00", "4:00", 
+                                "5:00")) +
+  ggtitle("Mean time per trial") +
+  geom_vline(
+             xintercept = c(3.5, 6.5),
+             linetype = "dashed",
+             color = "gray") +
+  annotate("text", x = 2, y = 285, label = "Day 1") +
+  annotate("text", x = 5, y = 285, label = "Day 2") +
+  annotate("text", x = 8, y = 285, label = "Day 3") +
+  coord_cartesian(ylim = c(0, 300), clip = "off") +
+  theme(
+    plot.margin = margin(b = 35)) +
+  theme_calc()
+```
+
+# Tiny bodies, big brains:
+
+## Spatial cognition-based learning and memory in black-capped chickadees
+
+#### How long does it take a chickadee, one of North America's most beloved backyard birds, to learn a spatial cognitive task?
+
+## Summary
+
+Somewhat like squirrels, black-capped chickadees are a food-caching species that relies on memory of its cache locations to survive harsh winters. This remarkable memory capacity is useful to study to understand avian ecology. We studied spatial learning (the ability of an individual to recognize and recall important information about the relative position of items in space) and reversal learning (the ability of the individual to update its own knowledge and behaviour when reward stimuli is changed) in a total of 22 black-capped chickadees.
+
+Each trial involves placing a “reward” (a mealworm) in one of 30 cache sites in the cognitive behavioural testing room. We record the amount of time and number of “errors” (non-reward sites visited) made per individual before the reward site is reached, and the same reward site is used each time. After spatial learning and memory testing, we switch the location of the reward site to test reversal learning ability.
+
+We found that the average number of errors per trial stayed relatively consistent around 7 per trial until day 3, where it dipped closer to 2; however, the time it took to reach the reward decreased significantly after the first trial. Reversal learning had a slow decrease that appears to be marked by the trial day, but the number of seconds to reach the reward similarly decreased rapidly. Overall, the number of errors made per trial decreased more slowly than average completion time across both tests.
+
+## Version A: Scientific Article
+
+### Introduction
+
+Black-capped chickadees (*Poecile atricapillus*) are food-caching birds that rely on spatial cognition to survive harsh winters. Thus, it is adaptive for individuals to have larger hippocampi with greater spatial reasoning and memory skills. In this study, we investigated spatial cognition in chickadees using spatial learning and memory (SpL&M) tasks and cognitive adaptability using reversal learning (RL) tasks in order to learn how much exposure is needed for chickadees to commit cache locations to memory. Measuring these skills will provide valuable insight into the lives of chickadees and their evolutionary strategies.
+
+### Methods
+
+We captured our sample of black-capped chickadees **(n = 22)** in the field in London, Ontario. Each individual was tested with 9 trials over 3 days (3 trials per day) for the SpL&M task, followed by the same for the RL task. Before testing, each bird underwent *shaping*, where they were "trained" to be familiar with and to use the cognitive behavioural room to recover "caches."
+
+For the SpL&M task, each individual was placed into the cognitive behavioural room containing a faux tree with 30 "cache sites." One of these was designated as the reward site, which contained a food reward, and the rest were empty. We recorded the location and order of all sites each bird visited as well as the time it took to find the reward site. Each trial for the SpL&M task repeated the reward location. The RL task was the same as the SpL&M task, except that it ran afterwards and had a different reward site, forcing individuals to relearn the reward location.
+
+### Results
+
+**Table 1** shows the average number of stops made at non-reward sites per trial for the RL and SpL&M tasks. Contrary to expectation, error quantity increased slightly across the three trials on day 1, before decreasing again at small intervals throughout day 2. As expected, the last two trials on day 3 had the lowest number of errors at approximately 2 per trial. Similarly, the number of errors for the RL task decreased over time. There is a difference of approximately 6 errors between the SpL&M task and the RL task, which could be because the locations of sites visited during the first SpL&M task is likely to be random, while sites visited during the first RL trial are not, as chickadees continue to act along their SpL&M-task information framework.
+
+**Table 1.**
+
+```{r}
+STK.err.barS
+```
+
+**Table 2** shows the average completion time per trial in minutes for both trial types. For both the SpL&M and RL tests, time started high and decreased quickly after. There is little difference in values of each test type, aside from the first trial and an unexplained increase in SpL&M during trial 3; more information is needed to learn why time is less variable than trial number.
+
+**Table 2.**
+
+```{r}
+STK.sec.barS
+```
+
+Comparing the trends in error frequency and time per trial, one can note that error frequency decreases more slowly than time. It may be that chickadees prioritize speed of cache recovery over accuracy. It is also possible that the rapid decrease in time taken to retrieve the cache is due to increasing acclimatization to the trial setup and mechanisms, but not due to rapid memorization of reward locations. In this situation, the number of errors would be more representative of memory, and the time measure would be representative of a function of memory and acclimatization.
+
+Nonetheless, the data shows that 8 trials over 3 days tends to be sufficient to commit a reward location to a chickadee's memory within \~2 error locations, and 3 trials over one day tends to be sufficient to allow a chickadee to recover a reward location within \~30 seconds, regardless of number of errors.
+
+## Version B: Accessible Outlet
+
+Chickadees might just be the tiniest bird at your feeder every year. But smart?
+
+Black-capped chickadees (*Poecile atricapillus*) are tiny but mighty little birds---cognitively, that is. As food-caching birds, they rely on their memory to recover all the food they hid away throughout the year to survive a long, cold winter when resources are slim. They are able to remember tens of thousands of cache sites based on location, and that requires a lot of brainpower. 
+
+To investigate the mental fortitude of black-capped chickadees, we put them to the test in a series of spatial learning and memory (SpL&M) and reversal learning (RL) trials. During 9 trials over 3 days, each chickadee (out of 22 total) was presented with a faux tree with 30 "cache sites"---one containing a reward, and 29 empty. We measured the amount of time it took for each chickadee to find the reward and the number of caches it checked beforehand ("errors"). Following that, chickadees went through the whole process again---but with a *new* reward site, to test their cognitive flexibility---how easily they could change their behaviours upon learning that their old knowledge set was no longer correct.
+
+```{r}
+splm.err.barP + splm.sec.barP
+```
+
+For the spatial learning task, chickadees typically made more errors as the trials went on in day 1. but by the second and third trials of day 3, they had gotten it down to an average of around 2 errors per trial. Interestingly, though, the amount of time it took to find the reward decreased much more drastically; after an initial spike in day 1 as chickadees completed the trial for the first time, the average completion time was generally around or under 30 seconds throughout days 2 and 3. This suggests that after the first day, chickadees were quick to check many sites, but still had to make many stops to find the reward. This is possibly because the birds were still getting used to the structure of the trials. 
+
+```{r}
+rl.err.barP + rl.sec.barP
+```
+
+After the chickadees had worked to commit the reward locations to memory, the reversal learning trials began, and the birds had to unlearn everything. The results are similar to that of the spatial learning & memory task---the number of errors decreased slowly, and completion time decreased rapidly---but the pattern is more distinct here. One might expect that chickadees would struggle a bit more to challenge and change previously-held assumptions and knowledge about the world. It seems that chickadees are fairly quick at revising their knowledge about spatial information, and this is likely a great boon to their survival. (Or the chickadees just got better at the trials presented to them---more research is needed to come to a substantive conclusion.)
+
+It is notable that both datasets show that on the 3rd day around the 8th and 9th trial, the average number of errors drops to ~2. Perhaps this indicates the minimum number of errors typical for chickadee cognition and the amount of exposure to the stimulus necessary to achieve this. It could also be true that with continued trials, the number would continue to decrease. 
+
+
+
+## Dataset Source
+
+Cognitive_Performance_Comprehensive.csv 
+Samuel Jung, gjung7@uwo.ca 
+Courtesy of the Branch Lab 
+Advanced Facility for Avian Research 
+University of Western Ontario 
+32 Wellington Dr, London, ON N6G 4W4, Canada
