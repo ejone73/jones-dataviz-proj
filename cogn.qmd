@@ -2,7 +2,7 @@
 title: "cogn"
 author: "Ember Jones"
 format: html
-execute: 
+execute:
   echo: false
   warning: false
   message: false
